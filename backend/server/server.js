@@ -113,4 +113,20 @@ app.post('/users/login', passport.authenticate('local', {
     faiilureFlash: 'true'
 }))
 
+app.post('/orders/new', async(req,res) => {
+    const {asin, supplier, product_name, quantity, price, total_price} = req.body
+
+    console.log(asin)
+    try {
+        pool.query(
+            `INSERT INTO orders(asin,supplier,product_name,quantity,price,total_price)
+            VALUES ($1,$2,$3,$4,$5,$6)`, [asin, supplier, product_name, quantity, price, total_price]
+        )
+        res.status(200).send('Order added.')
+    }catch(err) {
+        console.log(err)
+        res.status(500)
+    }
+})
+
 app.listen(port, () => console.log(`Server started on port: ${port}`))

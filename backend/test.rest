@@ -16,7 +16,7 @@ Content-Type: application/json
 
 {
     "name": "Davron Usmonov",
-    "email": "dave4@gmail.com",
+    "email": "dave5@gmail.com",
     "password": "test1234",
     "password2": "test1234"
 }
@@ -28,4 +28,17 @@ Content-Type: application/json
 {
     "email": "dave1@gmail.com",
     "password" : "test123"
+}
+
+###
+POST http://localhost:1337/orders/new
+Content-Type: application/json
+
+{
+    "asin": "B00XAUSDQW",
+    "supplier" : "Walmart",
+    "product_name": "Spring Valley Papaya",
+    "quantity": 10,
+    "price": 5,
+    "total_price": 50
 }
