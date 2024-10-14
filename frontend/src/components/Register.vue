@@ -11,4 +11,5 @@
     <input type="submit" value="Submit">
 </form>
 
+<RouterLink class="link" to="/">Home</RouterLink>
 </template>

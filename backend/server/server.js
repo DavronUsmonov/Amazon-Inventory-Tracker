@@ -4,6 +4,7 @@ const session = require('express-session')
 const flash = require('express-flash')
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
+const cors = require('cors')
 
 const initializePassport = require('../passportConfig.js')
 
@@ -15,11 +16,20 @@ app.use(session({
     resave: false,
     saveUninitialized: false
 }))
+app.use(cors())
 
 app.use(flash({
 
 
 }))
+
+/*function ensureAuth(req,res,next) {
+    if(req.isAuthenticated()) {
+        return next();
+    }else {
+        res.redirect('http://localhost:5173/Login')
+    }
+}*/
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -97,10 +107,10 @@ app.post('/users/register', async (req,res) => {
                 `INSERT INTO users(name,email,password)
                 VALUES ($1, $2, $3)`, [name, email, hashedPassword]
             )
-            //req.flash('success', 'You have been registered! Please log in now.')
-            //res.redirect('/users/login')
+            req.flash('success', 'You have been registered! Please log in now.')
         }
-        res.status(200).send('User registered.')
+        res.status(200).send('User registered')
+        console.log('User registered')
     } catch (err) {
         console.log(err)
         res.status(500)
@@ -108,8 +118,8 @@ app.post('/users/register', async (req,res) => {
 })
 
 app.post('/users/login', passport.authenticate('local', {
-    successRedirect:'/',
-    failureRedirect:'login',
+    successRedirect:'http://localhost:5173/dashboard',
+    failureRedirect:'http://localhost:5173/login',
     faiilureFlash: 'true'
 }))
 
@@ -128,5 +138,7 @@ app.post('/orders/new', async(req,res) => {
         res.status(500)
     }
 })
+
+app.post('')
 
 app.listen(port, () => console.log(`Server started on port: ${port}`))
