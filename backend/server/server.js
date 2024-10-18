@@ -14,22 +14,28 @@ app.use(express.json())
 app.use(session({
     secret: 'secret',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {secure:false}
 }))
-app.use(cors())
+app.use(cors({
+    origin : 'http://localhost:5173',
+    credentials: true
+}))
 
 app.use(flash({
 
 
 }))
 
-/*function ensureAuth(req,res,next) {
+function ensureAuth(req,res,next) {
     if(req.isAuthenticated()) {
+        console.log("auth succeeded")
         return next();
     }else {
+        console.log("auth failed")
         res.redirect('http://localhost:5173/Login')
     }
-}*/
+}
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -139,6 +145,8 @@ app.post('/orders/new', async(req,res) => {
     }
 })
 
-app.post('')
+app.get('/api/user/info', ensureAuth, (req,res) => {
+    res.status(200).json({user: req.user})
+}) 
 
 app.listen(port, () => console.log(`Server started on port: ${port}`))
