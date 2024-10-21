@@ -33,7 +33,7 @@ function ensureAuth(req,res,next) {
         return next();
     }else {
         console.log("auth failed")
-        res.redirect('http://localhost:5173/Login')
+        res.status(500).redirect('http://localhost:5173/Login')
     }
 }
 
@@ -129,14 +129,13 @@ app.post('/users/login', passport.authenticate('local', {
     faiilureFlash: 'true'
 }))
 
-app.post('/orders/new', async(req,res) => {
+app.post('/orders/new', ensureAuth, async (req,res) => {
     const {asin, supplier, product_name, quantity, price, total_price} = req.body
 
-    console.log(asin)
     try {
-        pool.query(
-            `INSERT INTO orders(asin,supplier,product_name,quantity,price,total_price)
-            VALUES ($1,$2,$3,$4,$5,$6)`, [asin, supplier, product_name, quantity, price, total_price]
+        await pool.query(
+            `INSERT INTO orders(user_id,asin,supplier,product_name,quantity,price,total_price)
+            VALUES ($1,$2,$3,$4,$5,$6,$7)`, [req.user.id, asin, supplier, product_name, quantity, price, total_price]
         )
         res.status(200).send('Order added.')
     }catch(err) {
@@ -147,6 +146,16 @@ app.post('/orders/new', async(req,res) => {
 
 app.get('/api/user/info', ensureAuth, (req,res) => {
     res.status(200).json({user: req.user})
+}) 
+
+app.get('/api/user/orders', ensureAuth, async (req,res) => {
+    try{
+        const user_orders = await (await pool.query(`SELECT * FROM orders WHERE user_id = $1`, [req.user.id])).rows
+        res.status(200).json(Object.values(user_orders))
+    }catch(err) {
+        console.log(err)
+        res.status(500)
+    }
 }) 
 
 app.listen(port, () => console.log(`Server started on port: ${port}`))

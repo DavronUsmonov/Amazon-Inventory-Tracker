@@ -46,3 +46,7 @@ Content-Type: application/json
 ###
 
 GET http://localhost:1337/api/users/info
+
+
+###
+GET http://localhost:1337/api/user/orders

@@ -1,4 +1,5 @@
 <template>
+<RouterLink to="/Orders">Orders</RouterLink>
 <h2>Hello {{ state.name }}</h2>
 </template>
 
@@ -18,7 +19,5 @@ onBeforeMount(() => {
         .catch((err) => {
             console.log(err)
         })
-}) 
-
-
+});
 </script>
