@@ -43,3 +43,33 @@ input[type='password'] {
 .link {
   padding: 1em;
 }
+
+#spreadsheet {
+  display: flex;
+  flex-direction: column;
+}
+
+.orders {
+  display: flex;
+  flex-direction: row;
+  border: 1px solid #dedede;
+  font-size: 16px;
+}
+
+.order-cell {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  width: 16.333%;
+  border: 1px solid #dedede;
+  display:flex;
+
+}
+
+.row-h {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  width: 2%;
+  border: 1px solid #dedede;
+  display:flex;
+  justify-content: center;
+}

@@ -10,4 +10,4 @@
     <p>Don't have an account?</p>
     <RouterLink class="link" to="/Register">Sign up</RouterLink>
     
-    </template>
+</template>

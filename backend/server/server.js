@@ -130,12 +130,12 @@ app.post('/users/login', passport.authenticate('local', {
 }))
 
 app.post('/orders/new', ensureAuth, async (req,res) => {
-    const {asin, supplier, product_name, quantity, price, total_price} = req.body
+    const {asin, supplier, product_name, quantity, price, total_price, date, status, sku, order_number, location} = req.body
 
     try {
         await pool.query(
-            `INSERT INTO orders(user_id,asin,supplier,product_name,quantity,price,total_price)
-            VALUES ($1,$2,$3,$4,$5,$6,$7)`, [req.user.id, asin, supplier, product_name, quantity, price, total_price]
+            `INSERT INTO orders(user_id,asin,supplier,product_name,quantity,price,total_price,date,status,sku,order_number,location)
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`, [req.user.id, asin, supplier, product_name, quantity, price, total_price, date, status, sku, order_number, location]
         )
         res.status(200).send('Order added.')
     }catch(err) {
@@ -156,6 +156,46 @@ app.get('/api/user/orders', ensureAuth, async (req,res) => {
         console.log(err)
         res.status(500)
     }
-}) 
+})
+
+app.post('/orders/save', ensureAuth, async (req,res) => {
+    const orders = req.body
+    try {
+        for(let i = 0; i < orders.length; i++) {
+            if(orders[i].order_id == null) {
+                await pool.query(
+                    `INSERT INTO orders(user_id,asin,supplier,product_name,quantity,price,total_price,date,status,sku,order_number,location)
+                    VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`, [orders[i].user_id,orders[i].asin, orders[i].supplier, orders[i].product_name, orders[i].quantity, orders[i].price, orders[i].total_price,
+                    orders[i].date,orders[i].status,orders[i].sku,orders[i].order_number,orders[i].location]
+                )
+            }else {
+                await pool.query(
+                    `UPDATE orders 
+                    SET asin = $1, supplier = $2, product_name = $3, quantity = $4, price = $5, total_price = $6,
+                    date = $7, status = $8, sku = $9,order_number = $10, location = $11 
+                    WHERE order_id = $12`, [orders[i].asin, orders[i].supplier, orders[i].product_name, orders[i].quantity, orders[i].price, orders[i].total_price,
+                    orders[i].date,orders[i].status,orders[i].sku,orders[i].order_number,orders[i].location, orders[i].order_id]
+                )
+            }
+        }
+        res.status(200).send('Orders updated.')
+    }catch(err) {
+        console.log(err)
+        res.status(500)
+    }
+})
+
+app.post('/orders/deleteOrder', ensureAuth, async (req,res) => {
+    const order_id = req.body
+    try {
+        await pool.query(`DELETE FROM orders WHERE order_id = $1`, [order_id])
+        res.status(200).send('Order deleted')
+    }catch(err) {
+        console.log(err)
+        res.status(500)
+    }
+})
+
+
 
 app.listen(port, () => console.log(`Server started on port: ${port}`))
