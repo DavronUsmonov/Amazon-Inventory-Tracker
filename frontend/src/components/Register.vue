@@ -1,4 +1,5 @@
 <template>
+<div id="register">
 <form @submit.prevent="registerUser">
     <input v-model="register.name" type="text" id="name" placeholder="Name" name="name">
     <input v-model="register.email" type="text" id="email" placeholder="Email" name="email">
@@ -8,6 +9,7 @@
 </form>
 
 <RouterLink class="link" to="/">Home</RouterLink>
+</div>
 </template>
 
 <script setup> 

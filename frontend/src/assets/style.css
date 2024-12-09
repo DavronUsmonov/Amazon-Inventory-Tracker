@@ -85,6 +85,30 @@ input[type='password'] {
   height:100%;
 }
 
+#login {
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height:100%;
+}
+
+#register {
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height:100%;
+}
+
+#lander {
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height:100%;
+}
+
 #app {
   height: 100vh;
 }
@@ -94,7 +118,7 @@ input[type='password'] {
   margin-bottom:2em;
 }
 
-button, .link{
+button, .link, #logSubmit{
   padding: 0.5em;
   margin: 1em;
   cursor: pointer;
