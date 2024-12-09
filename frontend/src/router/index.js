@@ -5,6 +5,7 @@ import Register from '../components/Register.vue'
 import Login from '../components/Login.vue'
 import Dashboard from '../components/Dashboard.vue'
 import Orders from '../components/Orders.vue'
+import Inventory from '../components/Inventory.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,7 +14,8 @@ const router = createRouter({
         { path: '/register', component: Register},
         { path: '/login', component: Login},
         { path: '/dashboard', component: Dashboard},
-        { path: '/orders', component: Orders}
+        { path: '/orders', component: Orders},
+        { path: '/inventory', component: Inventory},
     ]
 })
 

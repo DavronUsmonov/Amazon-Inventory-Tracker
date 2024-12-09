@@ -196,6 +196,27 @@ app.post('/orders/deleteOrder', ensureAuth, async (req,res) => {
     }
 })
 
+app.get('/api/user/inventory', ensureAuth, async (req,res) => {
+    const inventory = []
+    try{
+        const skus = (await pool.query(`SELECT DISTINCT sku FROM orders WHERE sku IS NOT NULL AND sku <> '' AND user_id = $1`, [req.user.id])).rows
+        for(let i = 0; i < skus.length; i++) {
+            const curr_sku = {sku:skus[i].sku}
+            curr_sku.asin = (await pool.query(`SELECT asin FROM orders WHERE sku = $1 AND user_id = $2 LIMIT 1`, [curr_sku.sku, req.user.id])).rows[0].asin
+            curr_sku.product_name = (await pool.query(`SELECT product_name FROM orders WHERE sku = $1 AND user_id = $2 LIMIT 1`, [curr_sku.sku, req.user.id])).rows[0].product_name
+            curr_sku.quantity = (await pool.query(`SELECT SUM(quantity) FROM orders WHERE sku = $1 AND user_id = $2 AND quantity IS NOT NULL AND total_price IS NOT NULL`, [curr_sku.sku, req.user.id])).rows[0].sum
+            curr_sku.total_price = (await pool.query(`SELECT SUM(total_price) FROM orders WHERE sku = $1 AND user_id = $2 AND total_price IS NOT NULL AND quantity IS NOT NULL`, [curr_sku.sku, req.user.id])).rows[0].sum
+            curr_sku.price = (curr_sku.total_price/curr_sku.quantity).toFixed(2)
+            if(curr_sku.total_price !== null) inventory.push(curr_sku)
+        }
+        //console.log(inventory)
+        res.status(200).json(inventory)
+    }catch(err) {
+        console.log(err)
+        res.status(500)
+    }
+})
+
 
 
 app.listen(port, () => console.log(`Server started on port: ${port}`))
